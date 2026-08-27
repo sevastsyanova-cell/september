@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сентябрь — выбери себя 🍂</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #e6fae6;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            padding: 20px 16px 40px;
+            color: #1e3b4c;
+        }
+        .leaves-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .leaf {
+            position: absolute;
+            top: -40px;
+            opacity: 0.5;
+            animation: leafFall linear infinite;
+        }
+        @keyframes leafFall {
+            0% {
+                transform: translateY(-40px) rotate(0deg);
+                opacity: 0.4;
+            }
+            100% {
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        .container { max-width: 480px; margin: 0 auto; position: relative; z-index: 1; }
+        .header-card {
+            background: white;
+            border-radius: 24px;
+            padding: 32px 24px 24px;
+            text-align: center;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.05);
+            margin-bottom: 16px;
+        }
+        .header-card .emoji-top { font-size: 44px; margin-bottom: 8px; }
+        .header-card h1 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e3b4c;
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+        .header-card .subtitle {
+            font-size: 14px;
+            color: #5b7d8e;
+            margin-bottom: 0;
+            line-height: 1.5;
+        }
+        .about-text {
+            background: white;
+            border-radius: 18px;
+            padding: 18px 20px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: #3d5a66;
+            line-height: 1.7;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+        }
+        .about-text p { margin-bottom: 8px; }
+        .about-text p:last-child { margin-bottom: 0; }
+        .about-cta { font-style: italic; color: #6f9eaf; margin-top: 2px; }
+        .prev-month-block {
+            background: white;
+            border-radius: 18px;
+            padding: 18px 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+        }
+        .prev-month-block .pm-title { font-size: 13px; font-weight: 600; color: #1e3b4c; margin-bottom: 6px; }
+        .prev-month-block .pm-hint { font-size: 12px; color: #8aa6b2; margin-bottom: 10px; font-style: italic; line-height: 1.5; }
+        .prev-month-list { list-style: none; padding: 0; margin-bottom: 10px; }
+        .prev-month-list li { font-size: 12px; color: #5b7d8e; padding: 4px 0; border-bottom: 1px solid #f0f4f6; line-height: 1.5; }
+        .prev-month-list li:last-child { border-bottom: none; }
+        .prev-month-empty { font-size: 12px; color: #8aa6b2; font-style: italic; }
+        .prev-month-bridge { font-size: 12px; color: #6f9eaf; font-style: italic; margin-top: 6px; display: none; }
+        .add-prev-event-btn {
+            display: inline-block;
+            background: #f6fafc;
+            border: 1px solid #c4d6de;
+            color: #5b7d8e;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .add-prev-event-btn:active { background: #e8f0f4; }
+        .prev-event-form { display: none; margin-top: 10px; }
+        .prev-event-form.active { display: block; }
+        .prev-event-form input {
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid #dce8ed;
+            font-size: 13px;
+            font-family: inherit;
+            margin-bottom: 6px;
+            background: #fafcfd;
+        }
+        .prev-event-form .pe-date { width: 60px; text-align: center; }
+        .prev-event-form .pe-emoji { width: 50px; text-align: center; font-size: 18px; }
+        .prev-event-form .pe-text { width: calc(100% - 130px); }
+        .prev-event-form .pe-save {
+            background: #a0c4d4;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+        }
+        .daily-phrase {
+            text-align: center;
+            font-size: 13px;
+            color: #5b7d8e;
+            margin-bottom: 12px;
+            font-style: italic;
+            padding: 0 4px;
+            line-height: 1.5;
+        }
+        .daily-phrase-bottom {
+            text-align: center;
+            font-size: 13px;
+            color: #7a9baa;
+            margin-top: 4px;
+            margin-bottom: 16px;
+            font-style: italic;
+            padding: 0 4px;
+            line-height: 1.5;
+        }
+        .progress-box {
+            background: white;
+            border-radius: 18px;
+            padding: 18px 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+        }
+        .progress-bar { height: 14px; background: #e0edf3; border-radius: 14px; overflow: hidden; margin-bottom: 8px; }
+        .progress-fill { height: 100%; background: #6fcf97; width: 0%; transition: width 0.3s ease; border-radius: 14px; }
+        .progress-text { font-size: 13px; color: #5b7d8e; font-weight: 500; }
+        .progress-support { font-size: 12px; color: #6f9eaf; font-style: italic; margin-top: 2px; }
+        .day-names { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 8px; padding: 0 2px; }
+        .day-name { text-align: center; font-size: 11px; font-weight: 500; color: #7a9baa; text-transform: uppercase; letter-spacing: 0.3px; }
+        .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 8px; }
+        .day-cell {
+            aspect-ratio: 1;
+            background: white;
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 500;
+            color: #2c4b5a;
+            cursor: pointer;
+            transition: transform 0.12s ease, box-shadow 0.12s ease;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            gap: 1px;
+        }
+        .day-cell:active { transform: scale(0.93); }
+        .day-cell.past { opacity: 0.35; background: #f0f5f7; cursor: pointer; }
+        .day-cell.today { background: #d4ecf6; box-shadow: 0 0 0 3px #a0d2e8; font-weight: 600; color: #1a3b4a; }
+        .day-cell.future { opacity: 0.45; background: #f5f9fb; cursor: pointer; }
+        .day-cell.done { background: #c8e6d0; color: #2d5a3a; opacity: 1 !important; cursor: pointer; }
+        .day-cell .day-num { font-size: 15px; font-weight: 500; line-height: 1; }
+        .day-cell .day-event-icon { font-size: 10px; line-height: 1; opacity: 0.8; }
+        .day-cell .lock { position: absolute; bottom: 3px; right: 4px; font-size: 9px; opacity: 0.6; }
+        .day-cell .star-mark { position: absolute; top: 3px; right: 4px; font-size: 9px; }
+        .signature {
+            text-align: center;
+            font-size: 13px;
+            color: #5b7d8e;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            padding: 0 4px;
+        }
+        .events-section {
+            background: white;
+            border-radius: 18px;
+            padding: 18px 20px;
+            margin-bottom: 14px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+        }
+        .events-section .events-title { font-size: 13px; font-weight: 600; color: #1e3b4c; margin-bottom: 4px; }
+        .events-section .events-hint { font-size: 12px; color: #8aa6b2; margin-bottom: 10px; font-style: italic; line-height: 1.5; }
+        .events-list { list-style: none; padding: 0; margin-bottom: 10px; }
+        .events-list li { font-size: 13px; color: #3d5a66; padding: 6px 0; border-bottom: 1px solid #f0f4f6; line-height: 1.5; }
+        .events-list li:last-child { border-bottom: none; }
+        .events-empty { font-size: 13px; color: #8aa6b2; font-style: italic; }
+        .events-first-added { font-size: 12px; color: #6f9eaf; font-style: italic; margin-top: 4px; display: none; }
+        .add-event-btn {
+            display: inline-block;
+            background: #f6fafc;
+            border: 1px solid #a0c4d4;
+            color: #5b7d8e;
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .add-event-btn:active { background: #e8f0f4; }
+        .add-event-form { display: none; margin-top: 10px; }
+        .add-event-form.active { display: block; }
+        .add-event-form input {
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid #dce8ed;
+            font-size: 14px;
+            font-family: inherit;
+            margin-bottom: 8px;
+            background: #fafcfd;
+        }
+        .add-event-form .ev-date { width: 60px; text-align: center; }
+        .add-event-form .ev-emoji { width: 55px; text-align: center; font-size: 20px; }
+        .add-event-form .ev-text { width: calc(100% - 135px); }
+        .add-event-form .save-event-btn {
+            background: #6fcf97;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #1a3b2a;
+            cursor: pointer;
+        }
+        .add-event-form .save-event-btn:active { background: #5cba82; }
+        .podcasts-block {
+            background: white;
+            border-radius: 18px;
+            padding: 18px 20px;
+            margin-bottom: 14px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+        }
+        .podcasts-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1e3b4c;
+            margin-bottom: 10px;
+        }
+        .podcasts-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 10px;
+        }
+        .podcasts-list li {
+            font-size: 13px;
+            color: #3d5a66;
+            padding: 6px 0;
+            border-bottom: 1px solid #f0f4f6;
+            line-height: 1.5;
+        }
+        .podcasts-list li:last-child {
+            border-bottom: none;
+        }
+        .podcasts-list a {
+            color: #2c7da0;
+            text-decoration: none;
+        }
+        .podcasts-list a:active {
+            color: #1e5f7a;
+        }
+        .youtube-link {
+            display: inline-block;
+            color: #2c7da0;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            margin-top: 4px;
+        }
+        .youtube-link:active {
+            color: #1e5f7a;
+        }
+        .bottom-action {
+            background: white;
+            border-radius: 24px;
+            padding: 24px 22px 22px;
+            text-align: center;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+            margin-bottom: 16px;
+            border: 2px solid #b8dae8;
+        }
+        .bottom-action-cta { font-size: 13px; color: #3d5a66; margin-bottom: 10px; font-style: italic; line-height: 1.5; }
+        .add-calendar-btn {
+            display: block;
+            width: 100%;
+            background: #2c7da0;
+            color: white;
+            text-decoration: none;
+            padding: 16px 18px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background 0.2s ease;
+            margin-bottom: 6px;
+            box-shadow: 0 4px 14px rgba(44,125,160,0.25);
+        }
+        .add-calendar-btn:active { background: #1e5f7a; }
+        .add-calendar-hint { font-size: 12px; color: #8aa6b2; margin-bottom: 14px; }
+        .instructions { text-align: left; background: #f6fafc; border-radius: 16px; padding: 16px 18px; font-size: 13px; color: #3d5a66; line-height: 1.6; }
+        .instructions summary { font-weight: 600; cursor: pointer; margin-bottom: 8px; color: #1e3b4c; }
+        .instructions ol { padding-left: 18px; }
+        .instructions ol li { margin-bottom: 6px; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(30,50,60,0.5); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.active { display: flex; }
+        .modal-card { background: white; border-radius: 24px; padding: 28px 22px 22px; max-width: 400px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.15); position: relative; max-height: 85vh; overflow-y: auto; }
+        .modal-card .m-emoji { font-size: 36px; margin-bottom: 8px; }
+        .modal-card .m-date { font-size: 13px; color: #7a9baa; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .modal-card .m-title { font-size: 19px; font-weight: 600; color: #1e3b4c; margin-bottom: 12px; line-height: 1.3; }
+        .modal-card .m-body { font-size: 14px; color: #3d5a66; line-height: 1.7; white-space: pre-wrap; margin-bottom: 10px; }
+        .modal-card .m-action-label { font-size: 13px; font-weight: 600; color: #2c4b5a; margin-bottom: 4px; margin-top: 12px; }
+        .modal-card .m-action { background: #f0f6f9; border-radius: 14px; padding: 14px 16px; font-size: 14px; color: #1e3b4c; line-height: 1.5; margin-bottom: 12px; border-left: 3px solid #a0d2e8; }
+        .modal-card .m-locked-message { text-align: center; font-size: 14px; color: #7a9baa; line-height: 1.6; padding: 10px 0; }
+        .modal-card .m-star-phrase { text-align: center; color: #6fcf97; font-weight: 500; margin-top: 8px; font-size: 14px; }
+        .modal-card .m-event-block { background: #fff9e6; border-radius: 12px; padding: 12px; margin-top: 10px; font-size: 13px; color: #5b4d2a; text-align: center; }
+        .modal-card textarea { width: 100%; min-height: 80px; padding: 12px; margin-bottom: 12px; border-radius: 12px; border: 1px solid #dce8ed; font-size: 14px; font-family: inherit; resize: vertical; background: #fafcfd; }
+        .modal-card label { display: flex; align-items: center; font-size: 14px; color: #2c4b5a; margin-bottom: 14px; cursor: pointer; }
+        .modal-card label input { margin-right: 8px; transform: scale(1.3); accent-color: #6fcf97; }
+        .modal-card .m-save { display: block; width: 100%; background: #6fcf97; border: none; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 600; color: #1a3b2a; cursor: pointer; margin-bottom: 8px; }
+        .modal-card .m-save:active { background: #5cba82; }
+        .modal-card .m-close { display: block; width: 100%; background: #e0edf3; border: none; padding: 12px; border-radius: 14px; font-size: 14px; color: #2c4b5a; cursor: pointer; }
+        .modal-card .m-close:active { background: #cfdfe7; }
+        .final-message { background: white; border-radius: 18px; padding: 20px 22px; margin-top: 16px; text-align: center; font-size: 14px; color: #3d5a66; line-height: 1.7; box-shadow: 0 4px 14px rgba(0,0,0,0.03); }
+        .final-message .final-emoji { font-size: 36px; margin-bottom: 10px; }
+        .final-stats { margin-top: 14px; padding-top: 14px; border-top: 1px solid #e8f0f3; }
+        .final-stats .fs-title { font-weight: 600; margin-bottom: 8px; }
+        .final-stats-row { display: flex; justify-content: center; gap: 20px; margin-bottom: 6px; }
+        .final-stats-item { text-align: center; font-size: 13px; }
+        .final-stats-item .fs-num { font-size: 22px; font-weight: 600; }
+        .final-stats-item .fs-label { font-size: 11px; color: #7a9baa; }
+        .final-events-summary { margin-top: 14px; padding-top: 14px; border-top: 1px solid #e8f0f3; text-align: left; }
+        .final-events-summary .fe-title { font-weight: 600; margin-bottom: 6px; }
+        .final-events-summary ul { list-style: none; padding: 0; }
+        .final-events-summary ul li { padding: 4px 0; font-size: 13px; }
+        .footer-note { text-align: center; font-size: 13px; color: #8aa6b2; line-height: 1.6; margin-top: 8px; }
+        .contact-block { background: white; border-radius: 18px; padding: 18px 20px; text-align: center; font-size: 13px; color: #3d5a66; line-height: 1.7; box-shadow: 0 4px 14px rgba(0,0,0,0.03); margin-top: 14px; }
+        .contact-block a { color: #2c7da0; font-weight: 500; text-decoration: none; }
+        .contact-block a:active { color: #1e5f7a; }
+    </style>
+</head>
+<body>
+    <div class="leaves-container" id="leavesContainer"></div>
+    <div class="container">
+        <div class="header-card">
+            <div class="emoji-top">🍂</div>
+            <h1>Как стать чуть больше собой<br>за 30 дней сентября</h1>
+            <p class="subtitle">Сентябрь всё равно пройдёт. Вопрос в том, насколько насыщенно проживёшь этот месяц именно ТЫ?</p>
+        </div>
+
+        <div class="about-text">
+            <p>Не обязательно менять жизнь сразу на 360 градусов.</p>
+            <p>Достаточно проживать чуть более осознанно ещё один день.</p>
+            <p>Этот календарь не про продуктивность. Не про идеальные привычки. Не про то, чтобы стать лучшей версией себя.</p>
+            <p>Он про другое. Каждый день сентября связан с настоящим праздником. Тебя ждут один вопрос. Одно небольшое действие. И ещё один маленький шаг навстречу себе.</p>
+            <p class="about-cta">Попробуй прямо сегодня. Открой ячейку и просто прочитай вопрос. Этого уже достаточно.</p>
+        </div>
+
+        <div class="prev-month-block" id="prevMonthBlock">
+            <div class="pm-title">📆 До сентября</div>
+            <div class="pm-hint">Оглянись на август. Что бы ты хотела запомнить? Даже пара слов создают историю.</div>
+            <ul class="prev-month-list" id="prevMonthList"></ul>
+            <div class="prev-month-bridge" id="prevMonthBridge">Вот с чем ты вошла в сентябрь. Теперь посмотрим, что будет дальше.</div>
+            <button class="add-prev-event-btn" onclick="togglePrevEventForm()">+ добавить событие</button>
+            <div class="prev-event-form" id="prevEventForm">
+                <input type="number" class="pe-date" id="peDate" placeholder="День" min="1" max="31">
+                <input type="text" class="pe-emoji" id="peEmoji" placeholder="🌟" maxlength="4">
+                <input type="text" class="pe-text" id="peText" placeholder="Что случилось?" maxlength="60">
+                <button class="pe-save" onclick="savePrevEvent()">Сохранить</button>
+            </div>
+        </div>
+
+        <div class="daily-phrase" id="dailyPhrase"></div>
+
+        <div class="progress-box">
+            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+            <div class="progress-text" id="progressText"></div>
+            <div class="progress-support" id="progressSupport"></div>
+        </div>
+
+        <div class="day-names">
+            <div class="day-name">пн</div><div class="day-name">вт</div><div class="day-name">ср</div>
+            <div class="day-name">чт</div><div class="day-name">пт</div><div class="day-name">сб</div>
+            <div class="day-name">вс</div>
+        </div>
+
+        <div class="days-grid" id="daysGrid"></div>
+        <div class="daily-phrase-bottom" id="dailyPhraseBottom"></div>
+
+        <p class="signature">
+            Это не курс и не марафон.<br>
+            Просто один вопрос, заданный себе в день,<br>
+            и одно действие, которые помогут тебе<br>
+            ещё больше стать собой.
+        </p>
+
+        <div class="events-section" id="eventsSection">
+            <div class="events-title">✨ События сентября</div>
+            <div class="events-hint">То, что случилось в этом месяце и хочется запомнить</div>
+            <ul class="events-list" id="eventsList"></ul>
+            <div class="events-first-added" id="eventsFirstAdded">Первое событие есть. Теперь этот месяц точно не забудется.</div>
+            <button class="add-event-btn" onclick="toggleEventForm()">+ событие</button>
+            <div class="add-event-form" id="eventForm">
+                <input type="number" class="ev-date" id="evDate" placeholder="День" min="1" max="30">
+                <input type="text" class="ev-emoji" id="evEmoji" placeholder="🌟" maxlength="4">
+                <input type="text" class="ev-text" id="evText" placeholder="Что случилось?" maxlength="60">
+                <button class="save-event-btn" onclick="saveEvent()">Сохранить</button>
+            </div>
+        </div>
+
+        <div class="podcasts-block">
+            <div class="podcasts-title">🎙 Подкасты, которые могут быть полезны</div>
+            <ul class="podcasts-list">
+                <li><a href="https://t.me/vsemozhnomne/3066" target="_blank">Как от*ебаться от себя, даже если твой внутренний критик размером с небоскрёб Москва-Сити, и вырастить внутреннего поддерживающего, любящего хвалитика</a></li>
+                <li><a href="https://t.me/vsemozhnomne/3068" target="_blank">Чей голос звучит внутри тебя постоянно твердит «ты недостаточно хороша». И что с ним делать, чтобы начать продавать и в целом заявлять о себе где бы то ни было</a></li>
+                <li><a href="https://t.me/vsemozhnomne/3108" target="_blank">Чувствуешь свой потенциал, но соглашаешься на маленькие деньги и боишься больших? Как перестать играть в эту игру, а начать реально реализовывать свой потенциал и монетизировать свои знания</a></li>
+            </ul>
+            <a class="youtube-link" href="https://www.youtube.com/@ЕкатеринаСевостьянова_коуч" target="_blank">▶ Смотреть канал на YouTube</a>
+        </div>
+
+        <div class="final-message" id="finalMessage" style="display:none;">
+            <div class="final-emoji">🍁</div>
+            <p>Сентябрь завершён.</p>
+            <p>Если ты сейчас читаешь эти строки, значит, этот месяц был прожит осознаннее, чем многие предыдущие.</p>
+            <p>Не потому что всё получилось идеально. А потому что ты снова и снова возвращалась к себе.</p>
+            <p>Иногда через один вопрос. Иногда через маленькое действие. Иногда через честный ответ.</p>
+            <p>Именно так постепенно ты создаешь жизнь, в которой ты становишься всё больше собой.</p>
+            <p>Поблагодари себя, что прожила этот сентябрь вместе с собой.</p>
+            <div class="final-stats" id="finalStats"></div>
+            <div class="final-events-summary" id="finalEventsSummary"></div>
+            <p style="margin-top:12px;">🤍</p>
+        </div>
+
+        <div class="bottom-action" id="bottomAction">
+            <p class="bottom-action-cta">Хочешь, чтобы вопрос дня приходил прямо в твой Календарь?</p>
+            <a class="add-calendar-btn" href="webcal://raw.githubusercontent.com/sevastsyanova-cell/september-calendar/main/september-calendar.ics">
+                ✦ Подписаться на календарь
+            </a>
+            <p class="add-calendar-hint">Нажмите «Подписаться», затем «Добавить»<br>После этого события появятся в приложении 📅 Календарь</p>
+            <div style="margin: 18px 0 14px; border-top: 1px dashed #c4d6de;"></div>
+            <p style="font-size: 14px; color: #3d5a66; font-weight: 500; margin-bottom: 10px;">Или сохраните сайт на экран «Домой»</p>
+            <p style="font-size: 12px; color: #8aa6b2; margin-bottom: 12px; line-height: 1.5;">Иконка появится на рабочем столе iPhone и будет открываться как приложение</p>
+            <details class="instructions">
+                <summary>📱 Как сохранить сайт на экран «Домой»</summary>
+                <ol>
+                    <li>Откройте этот сайт в Safari</li>
+                    <li>Нажмите кнопку «Поделиться» ↓ (квадратик со стрелкой вверх)</li>
+                    <li>Выберите «На экран «Домой»»</li>
+                    <li>Назовите, например, 🍂 Сентябрь</li>
+                    <li>Нажмите «Добавить» — иконка появится на рабочем столе</li>
+                </ol>
+            </details>
+            <p style="font-size: 12px; color: #8aa6b2; margin-top: 14px; font-style: italic;">Можно использовать оба варианта вместе:<br>подписаться на календарь и сохранить сайт на экран «Домой»</p>
+        </div>
+
+        <div class="contact-block">
+            <p>Этот проект бесплатный.</p>
+            <p>Если захочется сказать спасибо, поделиться мыслями или остаться рядом:</p>
+            <p>📬 Канал: <a href="https://t.me/vsemozhnomne" target="_blank">«Можно всё»</a></p>
+            <p>💌 Лично: <a href="https://t.me/katerinasevastsyanova" target="_blank">@katerinasevastsyanova</a></p>
+        </div>
+
+        <p class="footer-note" id="footerNote">
+            Каждый день можно становиться чуть больше собой.<br>И сегодня тоже. 🤍
+        </p>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-card" id="modalCard"></div>
+    </div>
+
+    <script>
+        const dayData = {
+            1:{emoji:"🌅",title:"День новых начинаний",body:"Вступая в этот новый сезон, от каких чужих ожиданий и «ты должна» тебе пора себя освободить? Какое единственное и твоё искреннее желание просит внимания этой осенью?",action:"Маленькое действие: запиши одно искреннее желание этой осени. Только твоё."},
+            2:{emoji:"⏳",title:"День свободного времени",body:"Когда ты даёшь себе паузу, не испытываешь ли ты фонового чувства вины за «ничегонеделание» или лень? Что поддержит тебя сегодня разрешить себе сделать то, что действительно хочется?",action:"Маленькое действие: разреши себе 20 минут того, что хочется. Без оправданий."},
+            3:{emoji:"🌫️",title:"День прощания с иллюзиями",body:"За какую иллюзию о себе или о других ты продолжаешь цепляться из страха встретиться с реальностью? Что изменится в твоей жизни, если ты разрешишь себе увидеть правду и опереться на неё?",action:"Маленькое действие: напиши одну правду, которую давно боишься признать. Посмотри на неё."},
+            4:{emoji:"🔮",title:"День обращения к интуиции",body:"В каком вопросе ты продолжаешь искать ответы снаружи: у экспертов, близких, в книгах, хотя твоё тело и интуиция уже давно знают верный ответ? Что поможет тебе услышать свой внутренний голос уже сейчас?",action:"Маленькое действие: задай вопрос и прислушайся к первой реакции тела. Это и есть ответ."},
+            5:{emoji:"🐾",title:"День мягких шагов",body:"Где в своей жизни ты привыкла требовать от себя резких рывков и идеальных результатов? Как выглядел бы твой сегодняшний день, если бы ты разрешила себе двигаться микроскопическими, но очень бережными к себе шагами?",action:"Маленькое действие: выбери одно дело и сделай его в три раза меньшим шагом, чем обычно."},
+            6:{emoji:"📖",title:"День чтения на скамейке",body:"За какой внешней суетой и бесконечным списком дел ты спрятала свою потребность в простом замедлении и паузе? От чего прямо сейчас защищает тебя твоя прокрастинация?",action:"Маленькое действие: устрой 15 минут медленного чтения или просто сидения на скамейке."},
+            7:{emoji:"🧹",title:"День очищения от ментального шума",body:"Какая одна навязчивая мысль или тревожная установка чаще всего забирает твой ресурс? Если бы ты могла выкинуть этот ментальный мусор в урну прямо сейчас, для чего важного освободилось бы место?",action:"Маленькое действие: выпиши навязчивую мысль на бумагу и разорви листок."},
+            8:{emoji:"💬",title:"День заботы о своей речи",body:"Какими словами ты разговариваешь с собой, когда ошибаешься или не успеваешь реализовать задуманное? Похож ли этот внутренний критик на того, кто тебя любит? Как ты можешь перевести этот диалог на язык поддержки?",action:"Маленькое действие: скажи себе фразу поддержки, как сказала бы лучшей подруге."},
+            9:{emoji:"🌸",title:"Всемирный день красоты",body:"Если отбросить все социальные стандарты и чужие фильтры, за что ты искренне благодарна своему телу прямо сейчас? В чём проявляется твоя естественная природная красота, когда ты расслаблена?",action:"Маленькое действие: посмотри в зеркало и назови три вещи, за которые ты благодарна своему телу."},
+            10:{emoji:"💎",title:"День ценности жизни",body:"Замечаешь ли ты, как обесцениваешь сам факт того, что ты есть и справляешься с этой жизнью? Что в твоём опыте говорит о твоей внутренней силе? На что ты можешь опираться?",action:"Маленькое действие: вспомни три ситуации, где ты справилась. Признай свою силу."},
+            11:{emoji:"😊",title:"День нечаянной радости",body:"Когда ты в последний раз разрешала себе искренне радоваться мелочам без оглядки на то, «уместно» это или нет? Какая маленькая деталь сегодняшнего дня способна вызвать у тебя тёплую внутреннюю улыбку?",action:"Маленькое действие: найди одну мелочь сегодня, которая вызовет тёплую улыбку."},
+            12:{emoji:"🌍",title:"День заземления и уюта",body:"Где в твоём теле прямо сейчас живёт напряжение? Что поможет тебе вернуть внимание из бесконечного потока мыслей обратно в телесные ощущения и прочувствовать опору под ногами?",action:"Маленькое действие: постой босиком на полу, сделай 5 медленных вдохов и выдохов."},
+            13:{emoji:"🛋️",title:"День создания своего кокона",body:"Насколько безопасно ты чувствуешь себя в своём ежедневном окружении? Какую личную границу тебе важно выстроить или укрепить, чтобы сохранить свой внутренний покой?",action:"Маленькое действие: укрепи одну границу — скажи «нет» тому, что лишает тебя покоя."},
+            14:{emoji:"👂",title:"День слушания шорохов",body:"Если бы ты на 10 минут выключила все внешние раздражители и чужие голоса, о чём попросило бы твоё тело?",action:"Маленькое действие: побудь 10 минут в тишине и прислушайся к телу."},
+            15:{emoji:"🤲",title:"День разрешения на ошибку",body:"За какую давнюю или недавнюю ошибку ты всё ещё мысленно себя наказываешь? Как изменится твоё отношение к себе, если ты увидишь в этом не провал, а необходимый опыт проживания жизни?",action:"Маленькое действие: скажи себе: «Тогда я сделала так, как могла. Теперь я знаю больше»."},
+            16:{emoji:"🚪",title:"День личного пространства",body:"Чьи эмоции, проблемы или чужие задачи ты путаешь со своими собственными? Что тебе нужно вернуть их законным владельцам, чтобы перестать сливать туда свою энергию?",action:"Маленькое действие: верни одну чужую задачу или эмоцию её владельцу."},
+            17:{emoji:"🐣",title:"День детской любознательности",body:"В какой сфере жизни ты стала слишком «взрослой», правильной и серьёзной? Где тебе не хватает здорового исследовательского азарта, игры и разрешения пробовать ради самого процесса?",action:"Маленькое действие: сделай что-то новое ради процесса, а не результата."},
+            18:{emoji:"🌙",title:"День уединения",body:"Пугает ли тебя оставаться наедине с собой в полной тишине, без телефона и фонового шума? Что самого важного открывается тебе, когда ты перестаёшь бежать от самой себя?",action:"Маленькое действие: проведи 15 минут наедине с собой. Без телефона и шума."},
+            19:{emoji:"💛",title:"День искренней улыбки себе",body:"Способна ли ты посмотреть на себя в зеркало без поиска изъянов и автоматической оценки? Что мешает тебе встретиться с собой взглядом с той же теплотой, с какой ты смотришь на любимого человека?",action:"Маленькое действие: улыбнись своему отражению. По-настоящему."},
+            20:{emoji:"🍵",title:"День замедления и тёплого чая",body:"Какое простое чувственное удовольствие — тепло чашки, запах осеннего воздуха, мягкость свитера — ты не замечаешь? Как ты можешь вернуть себе волшебство любого момента?",action:"Маленькое действие: завари чай и выпей его медленно, замечая вкус и тепло."},
+            21:{emoji:"🕊️",title:"День внутреннего покоя",body:"С какой частью самой себя — со своими страхами, теневыми сторонами или неидеальностью — ты до сих пор ведёшь истощающую войну? Что нужно, чтобы заключить перемирие?",action:"Маленькое действие: скажи одной своей неидеальной части: «Я больше не воюю с тобой»."},
+            22:{emoji:"⚖️",title:"Осеннее равноденствие / Баланс",body:"Где в твоей жизни произошёл перекос между «отдавать» и «брать»? Наполнена ли твоя собственная чаша перед тем, как ты щедро делишься ресурсом с другими?",action:"Маленькое действие: сделай что-то только для себя, чтобы наполнить свою чашу."},
+            23:{emoji:"💫",title:"День свидания с собой",body:"Если бы ты пошла на свидание со своей душой, куда бы вы отправились и о чём бы поговорили? В каком внимании и заботе ты нуждаешься больше всего прямо сейчас?",action:"Маленькое действие: устрой себе маленькое свидание. Хотя бы 30 минут."},
+            24:{emoji:"🎈",title:"День свободы от правил",body:"Какое глупое, нерациональное, но очень живое действие тебе хочется совершить, но тебя останавливает мысль «что обо мне подумают»?",action:"Маленькое действие: сделай что-то нерациональное, но живое. Без оглядки на других."},
+            25:{emoji:"🌟",title:"День тихих желаний",body:"Какая мечта живёт в тебе очень давно, но ты запрещаешь себе даже думать о ней, считая её «несвоевременной» или «нескромной»?",action:"Маленькое действие: запиши эту мечту. Дай ей право существовать."},
+            26:{emoji:"🦁",title:"День смелости и встречи со страхом",body:"Какой страх держит тебя в зоне комфорта и не даёт шагнуть на новый уровень? Что самого страшного произойдёт, если ты сделаешь шаг ему навстречу, и кто подстрахует тебя на этом пути?",action:"Маленькое действие: сделай один маленький шаг навстречу страху."},
+            27:{emoji:"🌑",title:"День исследования внутреннего мира",body:"Какая твоя тёмная сторона — злость, зависть, уязвимость или стыд — больше всего нуждается не в осуждении, а в тёплом исследовании и признании?",action:"Маленькое действие: признай одну свою «тёмную» эмоцию без осуждения."},
+            28:{emoji:"🍂",title:"День отпускания старого",body:"Подобно тому как деревья сбрасывают листву, от какого отжившего сценария, отношений или убеждений о себе тебе пришло время отказаться этой осенью?",action:"Маленькое действие: запиши то, что пора отпустить, и символически попрощайся."},
+            29:{emoji:"❤️",title:"Всемирный день сердца",body:"Насколько твоё сердце сейчас открыто миру и другим людям, а насколько заковано в броню из прошлых обид? Готова ли ты рисковать и начать чувствовать снова?",action:"Маленькое действие: сделай что-то, что растопит твоё сердце хотя бы на каплю."},
+            30:{emoji:"📝",title:"День итогов месяца",body:"За что ты искренне благодарна себе по итогам этого сентября? Какие 3 важных состояния или осознания ты забираешь с собой в следующий месяц?",action:"Маленькое действие: запиши 3 состояния или осознания, которые заберёшь с собой."}
+        };
+
+        const phrases = [
+            "🌞 Сегодня хороший день, чтобы выбрать себя.",
+            "🌿 Не обязательно менять жизнь. Иногда достаточно прожить осознанно один день.",
+            "☀️ Сегодня есть ещё один шанс услышать себя.",
+            "🤍 Не спеши. Ответ уже внутри.",
+            "🌱 Настоящие изменения начинаются с маленьких решений.",
+            "✨ Сегодня можно стать чуть ближе к себе.",
+            "💛 Не ищи правильный ответ. Ищи свой.",
+            "🌸 Один день. Один вопрос. Один шаг к себе."
+        ];
+
+        const donePhrases = [
+            "✨ Сегодня получилось выбрать себя.",
+            "🌱 Ещё один шаг навстречу себе.",
+            "🤍 Сегодня было время для себя.",
+            "🌿 Этот день прожит осознанно.",
+            "☀️ Сегодня получилось услышать себя.",
+            "💛 Сегодня было чуть меньше чужих ожиданий.",
+            "🌸 Сегодня стало чуть больше внутренней свободы.",
+            "✨ Продолжаешь возвращаться к себе.",
+            "🌼 Сегодня получилось жить по своим ощущениям.",
+            "☀️ Этот день теперь останется с тобой.",
+            "🌱 Продолжаешь свой путь.",
+            "💛 Сегодня получилось не пройти мимо себя.",
+            "✨ Сегодня было чуть больше настоящего тебя."
+        ];
+
+        const today = new Date();
+        const currentDay = today.getDate();
+        const currentMonth = today.getMonth();
+        const currentYear = today.getFullYear();
+        const isSeptember2026 = (currentYear === 2026 && currentMonth === 8);
+        const isAfterSeptember = (currentYear > 2026) || (currentYear === 2026 && currentMonth > 8);
+        let currentOpenDay = null;
+
+        function getDayOfWeek(dayNum) {
+            const d = new Date(2026, 8, dayNum);
+            return (d.getDay() + 6) % 7;
+        }
+
+        function loadDay(dayNum) {
+            return JSON.parse(localStorage.getItem('september-day-' + dayNum) || '{}');
+        }
+
+        function saveDayData(dayNum, data) {
+            localStorage.setItem('september-day-' + dayNum, JSON.stringify(data));
+        }
+
+        function getRandomPhrase(list) {
+            return list[Math.floor(Math.random() * list.length)];
+        }
+
+        function getDailyPhraseKey() {
+            const d = new Date();
+            return 'september-daily-phrase-' + d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
+        }
+
+        function loadEvents() {
+            return JSON.parse(localStorage.getItem('september-events') || '[]');
+        }
+
+        function saveEvents(events) {
+            localStorage.setItem('september-events', JSON.stringify(events));
+        }
+
+        function loadPrevEvents() {
+            return JSON.parse(localStorage.getItem('september-prev-events') || '[]');
+        }
+
+        function savePrevEvents(events) {
+            localStorage.setItem('september-prev-events', JSON.stringify(events));
+        }
+
+        function getEventForDay(dayNum) {
+            return loadEvents().find(e => e.day === dayNum);
+        }
+
+        function renderPrevEvents() {
+            const list = document.getElementById('prevMonthList');
+            const bridge = document.getElementById('prevMonthBridge');
+            const events = loadPrevEvents();
+            if (events.length === 0) {
+                list.innerHTML = '<li class="prev-month-empty">Пока пусто</li>';
+                bridge.style.display = 'none';
+            } else {
+                events.sort((a,b) => a.day - b.day);
+                list.innerHTML = events.map(e => `<li>${e.emoji} ${e.day} — ${e.text}</li>`).join('');
+                bridge.style.display = 'block';
+            }
+        }
+
+        function togglePrevEventForm() {
+            document.getElementById('prevEventForm').classList.toggle('active');
+        }
+
+        function savePrevEvent() {
+            const day = parseInt(document.getElementById('peDate').value);
+            const emoji = document.getElementById('peEmoji').value.trim() || '✨';
+            const text = document.getElementById('peText').value.trim();
+            if (!day || !text) return;
+            const events = loadPrevEvents();
+            events.push({ day, emoji, text });
+            savePrevEvents(events);
+            document.getElementById('peDate').value = '';
+            document.getElementById('peEmoji').value = '';
+            document.getElementById('peText').value = '';
+            document.getElementById('prevEventForm').classList.remove('active');
+            renderPrevEvents();
+        }
+
+        function renderEventsList() {
+            const list = document.getElementById('eventsList');
+            const firstAdded = document.getElementById('eventsFirstAdded');
+            const events = loadEvents();
+            if (events.length === 0) {
+                list.innerHTML = '<li class="events-empty">Здесь будут появляться твои моменты сентября. Не обязательно каждый день — только то, что правда важно. Добавь первое событие, и лента оживёт.</li>';
+                firstAdded.style.display = 'none';
+            } else {
+                events.sort((a,b) => a.day - b.day);
+                list.innerHTML = events.map(e => `<li>${e.day} сентября — ${e.emoji} ${e.text}</li>`).join('');
+                firstAdded.style.display = 'block';
+            }
+        }
+
+        function toggleEventForm() {
+            document.getElementById('eventForm').classList.toggle('active');
+        }
+
+        function saveEvent() {
+            const day = parseInt(document.getElementById('evDate').value);
+            const emoji = document.getElementById('evEmoji').value.trim() || '✨';
+            const text = document.getElementById('evText').value.trim();
+            if (!day || !text) return;
+            const events = loadEvents();
+            events.push({ day, emoji, text });
+            saveEvents(events);
+            document.getElementById('evDate').value = '';
+            document.getElementById('evEmoji').value = '';
+            document.getElementById('evText').value = '';
+            document.getElementById('eventForm').classList.remove('active');
+            renderGrid();
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('daysGrid');
+            grid.innerHTML = '';
+            const firstDayOfWeek = getDayOfWeek(1);
+            for (let i = 0; i < firstDayOfWeek; i++) {
+                const empty = document.createElement('div');
+                grid.appendChild(empty);
+            }
+            for (let d = 1; d <= 30; d++) {
+                const cell = document.createElement('div');
+                cell.className = 'day-cell';
+                const saved = loadDay(d);
+                const event = getEventForDay(d);
+                if (isSeptember2026) {
+                    if (d < currentDay && !saved.done) {
+                        cell.classList.add('past');
+                    } else if (d === currentDay && !saved.done) {
+                        cell.classList.add('today');
+                    } else if (d > currentDay && !saved.done) {
+                        cell.classList.add('future');
+                    }
+                }
+                if (saved.done) {
+                    cell.classList.add('done');
+                    cell.classList.remove('past', 'future', 'today');
+                }
+                const numEl = document.createElement('span');
+                numEl.className = 'day-num';
+                numEl.textContent = d;
+                cell.appendChild(numEl);
+                if (event) {
+                    const iconEl = document.createElement('span');
+                    iconEl.className = 'day-event-icon';
+                    iconEl.textContent = event.emoji;
+                    cell.appendChild(iconEl);
+                }
+                if (saved.done) {
+                    const star = document.createElement('span');
+                    star.className = 'star-mark';
+                    star.textContent = '⭐';
+                    cell.appendChild(star);
+                } else if (cell.classList.contains('future') || cell.classList.contains('past')) {
+                    const lock = document.createElement('span');
+                    lock.className = 'lock';
+                    lock.textContent = '🔒';
+                    cell.appendChild(lock);
+                }
+                cell.addEventListener('click', () => openDay(d));
+                grid.appendChild(cell);
+            }
+            updateProgress();
+            updateDailyPhrase();
+            updateFinalMessage();
+            renderEventsList();
+            renderPrevEvents();
+        }
+
+        function updateProgress() {
+            let done = 0;
+            for (let d = 1; d <= 30; d++) {
+                if (loadDay(d).done) done++;
+            }
+            const percent = Math.round(done / 30 * 100);
+            document.getElementById('progressFill').style.width = percent + '%';
+            const lived = done;
+            let missed = 0;
+            let left = 0;
+            if (isSeptember2026) {
+                missed = Math.max(0, currentDay - 1 - lived);
+                left = Math.max(0, 30 - currentDay + 1);
+            } else if (isAfterSeptember) {
+                missed = 30 - lived;
+            }
+            document.getElementById('progressText').innerText =
+                `Прожито: ${lived} • Упущено: ${missed} • Осталось: ${left}`;
+            const support = document.getElementById('progressSupport');
+            if (done === 0) {
+                support.textContent = 'Пока 0 из 30. Это не страшно — ты только начинаешь.';
+            } else if (done > 15 && done < 30) {
+                support.textContent = 'Больше половины сентября прожито осознанно. Ты справляешься.';
+            } else if (done === 30) {
+                support.textContent = 'Весь сентябрь прожит с вниманием к себе. Это впечатляет.';
+            } else {
+                support.textContent = '';
+            }
+        }
+
+        function updateDailyPhrase() {
+            const key = getDailyPhraseKey();
+            let phrase = localStorage.getItem(key);
+            if (!phrase) {
+                phrase = getRandomPhrase(phrases);
+                localStorage.setItem(key, phrase);
+            }
+            document.getElementById('dailyPhrase').textContent = phrase;
+            document.getElementById('dailyPhraseBottom').textContent = phrase;
+        }
+
+        function updateFinalMessage() {
+            const finalEl = document.getElementById('finalMessage');
+            const footerEl = document.getElementById('footerNote');
+            const bottomEl = document.getElementById('bottomAction');
+            const eventsEl = document.getElementById('eventsSection');
+            const prevEl = document.getElementById('prevMonthBlock');
+            const podcastsEl = document.querySelector('.podcasts-block');
+            if (isAfterSeptember || (isSeptember2026 && currentDay > 30)) {
+                finalEl.style.display = 'block';
+                footerEl.style.display = 'none';
+                bottomEl.style.display = 'none';
+                eventsEl.style.display = 'none';
+                prevEl.style.display = 'none';
+                if (podcastsEl) podcastsEl.style.display = 'none';
+                let done = 0;
+                for (let d = 1; d <= 30; d++) {
+                    if (loadDay(d).done) done++;
+                }
+                const missed = 30 - done;
+                document.getElementById('finalStats').innerHTML = `
+                    <div class="fs-title">📊 Статистика месяца</div>
+                    <div class="final-stats-row">
+                        <div class="final-stats-item">
+                            <div class="fs-num" style="color:#6fcf97;">${done}</div>
+                            <div class="fs-label">Прожито</div>
+                        </div>
+                        <div class="final-stats-item">
+                            <div class="fs-num" style="color:#c4a882;">${missed}</div>
+                            <div class="fs-label">Упущено</div>
+                        </div>
+                    </div>
+                `;
+                const events = loadEvents();
+                const summary = document.getElementById('finalEventsSummary');
+                if (events.length > 0) {
+                    events.sort((a,b) => a.day - b.day);
+                    summary.innerHTML = `
+                        <div class="fe-title">✨ Твой сентябрь в моментах</div>
+                        <ul>${events.map(e => `<li>${e.day} сентября — ${e.emoji} ${e.text}</li>`).join('')}</ul>
+                        <p style="margin-top:8px;">${events.length} ${events.length === 1 ? 'событие' : (events.length < 5 ? 'события' : 'событий')}, ${events.length === 1 ? 'которое сделало' : 'которые сделали'} этот месяц твоим.</p>
+                    `;
+                } else {
+                    summary.innerHTML = `<p>Этот месяц был прожит осознанно.<br>Этого уже достаточно.</p>`;
+                }
+            }
+        }
+
+        function openDay(dayNum) {
+            if (!dayData[dayNum]) return;
+            currentOpenDay = dayNum;
+            const saved = loadDay(dayNum);
+            const event = getEventForDay(dayNum);
+            const isPast = isSeptember2026 && dayNum < currentDay && !saved.done;
+            const isFuture = isSeptember2026 && dayNum > currentDay && !saved.done;
+            const isLocked = isPast || isFuture;
+            const card = document.getElementById('modalCard');
+            if (saved.done) {
+                const starPhrase = saved.starPhrase || getRandomPhrase(donePhrases);
+                let eventHTML = '';
+                if (event) {
+                    eventHTML = `<div class="m-event-block">✨ Событие дня: ${event.emoji} ${event.text}</div>`;
+                }
+                card.innerHTML = `
+                    <div class="m-emoji">${dayData[dayNum].emoji}</div>
+                    <div class="m-date">${dayNum} сентября</div>
+                    <div class="m-title">${dayData[dayNum].title}</div>
+                    <div class="m-body">${dayData[dayNum].body}</div>
+                    <div class="m-action">${dayData[dayNum].action}</div>
+                    ${eventHTML}
+                    <div class="m-action-label">Твой ответ:</div>
+                    <div class="m-body" style="background:#f6fafc;border-radius:12px;padding:12px;">${saved.answer || '—'}</div>
+                    <div class="m-action-label">Твоё действие:</div>
+                    <div class="m-body" style="background:#f6fafc;border-radius:12px;padding:12px;">${saved.action || '—'}</div>
+                    <p class="m-star-phrase">${starPhrase}</p>
+                    <button class="m-close" onclick="closeModal()">Закрыть</button>
+                `;
+            } else if (isLocked) {
+                const msg = isPast
+                    ? "Этот день уже закончился.<br><br>Мы не можем изменить вчера.<br>Но сегодняшний день всё ещё ждёт твоего выбора."
+                    : "Этот день ещё не наступил.<br><br>Не забегай вперёд.<br>Сначала проживи сегодняшний.";
+                card.innerHTML = `
+                    <div class="m-locked-message">${msg}</div>
+                    <button class="m-close" onclick="closeModal()">Закрыть</button>
+                `;
+            } else {
+                let eventHTML = '';
+                if (event) {
+                    eventHTML = `<div class="m-event-block">✨ Событие дня: ${event.emoji} ${event.text}</div>`;
+                }
+                card.innerHTML = `
+                    <div class="m-emoji">${dayData[dayNum].emoji}</div>
+                    <div class="m-date">${dayNum} сентября</div>
+                    <div class="m-title">${dayData[dayNum].title}</div>
+                    <div class="m-body">${dayData[dayNum].body}</div>
+                    <div class="m-action">${dayData[dayNum].action}</div>
+                    ${eventHTML}
+                    <div class="m-action-label">Что приходит тебе в ответ?</div>
+                    <textarea id="answer" placeholder="Напиши честно...">${saved.answer || ''}</textarea>
+                    <div class="m-action-label">Какое действие я выбираю сегодня?</div>
+                    <textarea id="actionInput" placeholder="Маленький шаг...">${saved.action || ''}</textarea>
+                    <label>
+                        <input type="checkbox" id="doneCheckbox" ${saved.done ? 'checked' : ''}> Сделано
+                    </label>
+                    <button class="m-save" onclick="saveDay()">Сохранить</button>
+                    <button class="m-close" onclick="closeModal()">Закрыть</button>
+                `;
+            }
+            document.getElementById('modalOverlay').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            currentOpenDay = null;
+        }
+
+        function saveDay() {
+            if (!currentOpenDay) return;
+            const answerEl = document.getElementById('answer');
+            const actionEl = document.getElementById('actionInput');
+            const doneEl = document.getElementById('doneCheckbox');
+            if (!answerEl || !actionEl || !doneEl) return;
+            const starPhrase = doneEl.checked && !loadDay(currentOpenDay).done
+                ? getRandomPhrase(donePhrases)
+                : (loadDay(currentOpenDay).starPhrase || '');
+            const data = {
+                answer: answerEl.value,
+                action: actionEl.value,
+                done: doneEl.checked,
+                starPhrase: starPhrase
+            };
+            saveDayData(currentOpenDay, data);
+            renderGrid();
+            closeModal();
+        }
+
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        function createLeaves() {
+            const container = document.getElementById('leavesContainer');
+            const leafEmojis = ['🍂', '🍁'];
+            const leafCount = 4;
+            for (let i = 0; i < leafCount; i++) {
+                const leaf = document.createElement('div');
+                leaf.className = 'leaf';
+                leaf.textContent = leafEmojis[Math.floor(Math.random() * leafEmojis.length)];
+                leaf.style.left = (10 + Math.random() * 80) + '%';
+                leaf.style.animationDuration = (12 + Math.random() * 10) + 's';
+                leaf.style.animationDelay = (Math.random() * 10) + 's';
+                leaf.style.fontSize = (16 + Math.random() * 14) + 'px';
+                container.appendChild(leaf);
+            }
+        }
+        createLeaves();
+
+        renderGrid();
+    </script>
+</body>
+</html>
